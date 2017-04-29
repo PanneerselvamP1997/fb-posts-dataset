@@ -144,15 +144,17 @@ def processFacebookPageFeedStatus(status, access_token):
 
     # Return a tuple of all processed data
 
-    return (status_id, status_message, link_name, status_type, status_link,
-            status_published, num_reactions, num_comments, num_shares,
-            num_likes, num_loves, num_wows, num_hahas, num_sads, num_angrys)
+    return (status_id, status_message, link_name, status_type,
+            status_link, status_published, num_reactions,
+            num_comments, num_shares, num_likes, num_loves,
+            num_wows, num_hahas, num_sads, num_angrys)
 
 
 def scrapeFacebookPageFeedStatus(page_id, access_token):
     with open('dataset/%s_facebook_statuses.csv' % page_id, 'w',
               newline='', encoding='utf-8') as file:
         w = csv.writer(file)
+
         w.writerow(["status_id", "status_message", "link_name", "status_type",
                     "status_link", "status_published", "num_reactions",
                     "num_comments", "num_shares", "num_likes", "num_loves",
@@ -171,8 +173,10 @@ def scrapeFacebookPageFeedStatus(page_id, access_token):
 
                 # Ensure it is a status with the expected metadata
                 if 'reactions' in status:
-                    w.writerow(processFacebookPageFeedStatus(status,
-                                                             access_token))
+                    a = processFacebookPageFeedStatus(status,
+                                                      access_token)
+                    if a[3] == "status":
+                        w.writerow(a)
 
                 # output progress occasionally to make sure code is not
                 # stalling
