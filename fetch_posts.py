@@ -4,6 +4,9 @@ import datetime
 import csv
 import time
 import sys
+import re
+import string
+from stop_words import get_stop_words
 
 app_id = "1884074868474120"
 app_secret = "d64ec7a033df6366902adf00d90ca912"  # DO NOT SHARE WITH ANYONE!
@@ -29,6 +32,32 @@ def request_until_succeed(url):
             print("Retrying.")
 
     return response.read().decode(response.headers.get_content_charset())
+
+
+def load_stop_words():
+    # x = stopwords.words("english")
+    x = get_stop_words("en")
+    return [s.encode('ascii') for s in x] + list(string.printable)
+
+
+def clean_split(s):
+    return re.split('|'.join(map(re.escape, delimiters)), s.lower().strip())
+
+
+def special_split(s):
+    x = clean_split(s)
+    return filter(lambda a: a != "", x)
+
+
+def clean_words(array):
+    cleaned_words = []
+    for word in array:
+        if (word is '') or (word in stop_words) or (word.isdigit()):
+            continue
+        else:
+            # word = porter.stem(word, 0, len(word) - 1)
+            cleaned_words.append(word)
+    return cleaned_words
 
 
 # Needed to write tricky unicode correctly to csv
@@ -175,7 +204,11 @@ def scrapeFacebookPageFeedStatus(page_id, access_token):
                 if 'reactions' in status:
                     a = processFacebookPageFeedStatus(status,
                                                       access_token)
-                    if a[3] == "status":
+                    terms = clean_words(special_split(a[1]))
+                    length = len(terms)
+
+                    # if a[3] == "status":
+                    if length > 15:
                         w.writerow(a)
 
                 # output progress occasionally to make sure code is not
@@ -196,6 +229,13 @@ def scrapeFacebookPageFeedStatus(page_id, access_token):
               (num_processed, datetime.datetime.now() - scrape_starttime))
 
 
+stop_words = []
+delimiters = ['\n', ' ', ',', '.', '?', '!', ':', ';', '#', '$', '[', ']',
+              '(', ')', '-', '=', '@', '%', '&', '*', '_', '>', '<',
+              '{', '}', '|', '/', '\\', '\'', '"', '\t', '+', '~',
+              '^']
+
 if __name__ == '__main__':
-    page_id = str(sys.argv[1])
+    page_id = str(sys.argv[1]).lower()
+    load_stop_words()
     scrapeFacebookPageFeedStatus(page_id, access_token)
