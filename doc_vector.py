@@ -85,6 +85,8 @@ for l in d:
         ans = map(add, ans, wv)
     # print(ans)
     # print(den)
+    if den == 0:
+        den = 1
     for i in range(len(ans)):
         ans[i] = ans[i] / float(den)
     # print(ans)
@@ -94,7 +96,8 @@ for l in d:
 
 f = open("vector_twitter.txt", "w")
 for y in fin:
-    f.write(str(' '.join(y)) + "\n")
+    # f.write(str(' '.join(y)) + "\n")
+    f.write(str(y) + "\n")
 f.close()
 
 f = open("label_twitter.txt", "w")
