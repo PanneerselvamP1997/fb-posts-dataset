@@ -1,11 +1,12 @@
-import urllib.request
-import json
-import datetime
 import csv
-import time
-import sys
+import datetime
+import json
 import re
 import string
+import sys
+import time
+import urllib.request
+
 from stop_words import get_stop_words
 
 app_id = "1884074868474120"
@@ -87,10 +88,10 @@ def getFacebookPageFeedData(page_id, access_token, num_statuses):
 
 
 def getReactionsForStatus(status_id, access_token):
-
-    # See http://stackoverflow.com/a/37239851 for Reactions parameters
-        # Reactions are only accessable at a single-post endpoint
-
+    """
+    See http://stackoverflow.com/a/37239851 for Reactions parameters
+    Reactions are only accessable at a single-post endpoint
+    """
     base = "https://graph.facebook.com/v2.6"
     node = "/%s" % status_id
     reactions = "/?fields=" \
