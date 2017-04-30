@@ -1,3 +1,4 @@
 # dataset/
 wiki*
 *.pyc
+model*
