@@ -30,18 +30,18 @@ def create_index(c, l):
 index = defaultdict(dict)
 idf = {}
 
-#model = fasttext.load_model("wiki.en/wiki.en.bin")
+# model = fasttext.load_model("wiki.en/wiki.en.bin")
+# model = FastText.load_fasttext_format("wiki.en/wiki.en")
 # print(model.model_name)
 # print(model.words)
 print("model about to be loaded!")
-#model = FastText.load_fasttext_format("wiki.en/wiki.en")
+model = gensim.models.KeyedVectors.load_word2vec_format(
+    'glove_twitter.txt', binary=False)
 print("model loaded!")
-
-model = gensim.models.KeyedVectors.load_word2vec_format('glove_twitter.txt', binary=False)
 
 
 f = open("preprocess_combined.txt", "r")
-#f=open("training_data.txt","r")
+# f=open("training_data.txt","r")
 data = []
 label = []
 glob_count = 0
@@ -66,8 +66,12 @@ for l in d:
     new_word_vector = []
     for w in l:
         idf_ = math.log10(glob_count / idf[w])
-        #idf_=1
-        f = model[w]
+        # idf_=1
+        f = [0] * 200
+        try:
+            f = model[w]
+        except Exception:
+            pass
 #        f = [x for x in xrange(10)]
         mean = sum(f) / float(len(f))
         new_doc = []
@@ -79,11 +83,11 @@ for l in d:
     ans = [0] * 200
     for wv in new_word_vector:
         ans = map(add, ans, wv)
-    #print(ans)
-    #print(den)
+    # print(ans)
+    # print(den)
     for i in range(len(ans)):
         ans[i] = ans[i] / float(den)
-    #print(ans)
+    # print(ans)
     # for v in new_word_vector:
     #     new_v = map(add, )
     fin.append(ans)
