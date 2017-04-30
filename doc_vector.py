@@ -37,16 +37,17 @@ print("model about to be loaded!")
 # model = FastText.load_fasttext_format("wiki.en/wiki.en")
 print("model loaded!")
 
-model = gensim.models.KeyedVectors.load_word2vec_format('glove_twitter.txt', binary=False)
+#model = gensim.models.KeyedVectors.load_word2vec_format('glove_twitter.txt', binary=False)
 
 
-f = open("training_data.txt", "r")
+#f = open("preprocess_combined.txt", "r")
+f=open("training_data.txt","r")
 data = []
 label = []
 glob_count = 0
 for line in f:
     l = line.strip('\n')
-    l = l.split("_label_")
+    l = l.split("__label__")
     data.append(l[0])
     label.append(l[1])
     glob_count = glob_count + 1
@@ -58,14 +59,16 @@ for l in data:
     h = l.split()
     create_index(count, h)
     d.append(h)
+    count = count + 1
 for l in d:
     mean = None
     den = 0.0
     new_word_vector = []
     for w in l:
-        idf_ = math.log10(glob_count / idf[w])
-        f = model[w]
-        #f = [x for x in xrange(10)]
+        #idf_ = math.log10(glob_count / idf[w])
+        idf_=1
+        #f = model[w]
+        f = [x for x in xrange(10)]
         mean = sum(f) / float(len(f))
         new_doc = []
         for x in f:
@@ -73,26 +76,24 @@ for l in d:
             new_doc.append(new_score)
         new_word_vector.append(new_doc)
         den += idf_
-    ans=[0]*200
+    ans = [0] * 200
     for wv in new_word_vector:
-        ans=map(add,ans,wv)
-    #print(ans)
-    #print(den)
+        ans = map(add, ans, wv)
+    print(ans)
+    print(den)
     for i in range(len(ans)):
-        ans[i]=ans[i]/float(den)
-    #print(ans)
+        ans[i] = ans[i] / float(den)
+    print(ans)
     # for v in new_word_vector:
     #     new_v = map(add, )
+    #fin.append(ans)
 
-
-    fin.append(ans)
-
-f = open("vector.txt", "w")
+f = open("vector_twitter.txt", "w")
 for y in fin:
-    f.write(str(y))
+    f.write(str(' '.join(y)) + "\n")
 f.close()
 
-f = open("label.txt", "w")
+f = open("label_twitter.txt", "w")
 for l in label:
     f.write(str(l))
 f.close()
