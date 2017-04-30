@@ -4,6 +4,7 @@ from gensim.models.wrappers import FastText
 from collections import defaultdict
 import math
 # from collections import OrderedDict
+from operator import add
 
 
 def create_index(c, l):
@@ -29,7 +30,7 @@ idf = {}
 # print(model.model_name)
 # print(model.words)
 print("model about to be loaded!")
-model = FastText.load_fasttext_format("wiki.en/wiki.en")
+# model = FastText.load_fasttext_format("wiki.en/wiki.en")
 print("model loaded!")
 
 
@@ -39,7 +40,7 @@ label = []
 glob_count = 0
 for line in f:
     l = line.strip('\n')
-    l = l.split("__label__")
+    l = l.split("_label_")
     data.append(l[0])
     label.append(l[1])
     glob_count = glob_count + 1
@@ -54,14 +55,26 @@ for l in data:
 for l in d:
     mean = None
     den = 0
-    z = None
+    new_word_vector = []
     for w in l:
-        s = math.log10(glob_count / idf[w])
-        f = model[w]
-        z = z + (f - sum(f) / len(f)) * s
-        den = den + s
-    z = z / den
-    fin.append(z)
+        idf_ = math.log10(glob_count / idf[w])
+        # f = model[w]
+        f = [x for x in xrange(10)]
+        mean = sum(f) / len(f)
+
+        new_doc = []
+        for x in f:
+            new_score = (x - mean) * idf_
+            new_doc.append(new_score)
+        new_word_vector.append(new_doc)
+    den += s
+
+    # for v in new_word_vector:
+    #     new_v = map(add, )
+
+    x = [v]
+
+    # fin.append(z)
 
 f = open("vector.txt", "w")
 for y in fin:
