@@ -1,10 +1,14 @@
 # import fasttext
-from gensim.models.wrappers import FastText
+#from gensim.models.wrappers import FastText
 # import string
 from collections import defaultdict
 import math
 # from collections import OrderedDict
 from operator import add
+
+import gensim
+
+#from gensim.models.keyedvectors import KeyedVectors
 
 
 def create_index(c, l):
@@ -32,6 +36,8 @@ idf = {}
 print("model about to be loaded!")
 # model = FastText.load_fasttext_format("wiki.en/wiki.en")
 print("model loaded!")
+
+model = gensim.models.KeyedVectors.load_word2vec_format('glove_twitter.txt', binary=False)
 
 
 f = open("training_data.txt", "r")
@@ -83,9 +89,10 @@ for l in d:
 
 f = open("vector.txt", "w")
 for y in fin:
-    f.write(y)
+    f.write(str(y))
 f.close()
+
 f = open("label.txt", "w")
 for l in label:
-    f.write(l)
+    f.write(str(l))
 f.close()
