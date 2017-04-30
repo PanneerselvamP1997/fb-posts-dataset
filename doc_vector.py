@@ -54,27 +54,32 @@ for l in data:
     d.append(h)
 for l in d:
     mean = None
-    den = 0
+    den = 0.0
     new_word_vector = []
     for w in l:
         idf_ = math.log10(glob_count / idf[w])
-        # f = model[w]
-        f = [x for x in xrange(10)]
-        mean = sum(f) / len(f)
-
+        f = model[w]
+        #f = [x for x in xrange(10)]
+        mean = sum(f) / float(len(f))
         new_doc = []
         for x in f:
             new_score = (x - mean) * idf_
             new_doc.append(new_score)
         new_word_vector.append(new_doc)
-    den += s
-
+        den += idf_
+    ans=[0]*200
+    for wv in new_word_vector:
+        ans=map(add,ans,wv)
+    #print(ans)
+    #print(den)
+    for i in range(len(ans)):
+        ans[i]=ans[i]/float(den)
+    #print(ans)
     # for v in new_word_vector:
     #     new_v = map(add, )
 
-    x = [v]
 
-    # fin.append(z)
+    fin.append(ans)
 
 f = open("vector.txt", "w")
 for y in fin:
