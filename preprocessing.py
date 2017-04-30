@@ -65,7 +65,8 @@ def get_text_fromcsv(filename):
             if l != "None":
                 cleaned = ' '.join(clean_words(special_split(r[1])))
                 # dic[l] = dic[l] + 1
-                d.append(cleaned + " __label__" + l)
+                #d.append(cleaned + " __label__" + l)
+                d.append(cleaned)
         return d
 
 delimiters = ['\n', ' ', ',', '.', '?', '!', ':', ';', '#', '$', '[', ']',
@@ -76,7 +77,7 @@ stop_words = load_stop_words()
 porter = PorterStemmer()
 data = get_text_fromcsv("combined.csv")
 
-fi = open("preporocess_combined.txt", "w")
+fi = open("withoutlabels_combined.txt", "w")
 for line in data:
     fi.write(line + "\n")
 fi.close()
